@@ -1,29 +1,4 @@
-# This is my package Notion
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/elsayed85/notion.svg?style=flat-square)](https://packagist.org/packages/elsayed85/notion)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/elsayed85/notion/run-tests?label=tests)](https://github.com/elsayed85/notion/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/elsayed85/notion/Check%20&%20fix%20styling?label=code%20style)](https://github.com/elsayed85/notion/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/elsayed85/notion.svg?style=flat-square)](https://packagist.org/packages/elsayed85/notion)
-
----
-This repo can be used as to scaffold a Laravel package. Follow these steps to get started:
-
-1. Press the "Use template" button at the top of this repo to create a new repo with the contents of this notion
-2. Run "./configure-notion.sh" to run a script that will replace all placeholders throughout all the files
-3. Remove this block of text.
-4. Have fun creating your package.
-5. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/notion.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/notion)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+# This is my package For Notion Api
 
 ## Installation
 
@@ -33,14 +8,8 @@ You can install the package via composer:
 composer require elsayed85/notion
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --provider="Elsayed85\Notion\NotionServiceProvider" --tag="notion-migrations"
-php artisan migrate
-```
-
 You can publish the config file with:
+
 ```bash
 php artisan vendor:publish --provider="Elsayed85\Notion\NotionServiceProvider" --tag="notion-config"
 ```
@@ -49,20 +18,168 @@ This is the contents of the published config file:
 
 ```php
 return [
+    "base" => "https://api.notion.com",
+    'version' => '2021-05-13'
 ];
 ```
+
+Add Notion Api To your env
+
+in config/services.php
+```
+'notion' => [
+        'client_id' => env('NOTION_CLIENT_ID'),
+        'client_secret' => env('NOTION_CLIENT_SECRET'),
+        'token' => env('NOTION_TOKEN')
+]
+```
+
+in .env add 
+```
+# for public
+NOTION_CLIENT_ID=
+NOTION_CLIENT_SECRET=
+
+# for internal
+NOTION_TOKEN=
+```
+
 
 ## Usage
 
 ```php
-$notion = new Elsayed85\Notion();
-echo $notion->echoPhrase('Hello, Spatie!');
-```
+$notion = new Elsayed85\Internal\Notion();
 
-## Testing
+$start_cursor = null;
+$page_size = 20;
 
-```bash
-composer test
+// https://developers.notion.com/reference/get-databases
+$notion->databases($start_cursor , $page_size);
+
+// https://developers.notion.com/reference/post-database-query
+$notion->queryDatabase("2f611956-c64b-4588-ab64-2f013ac42527");
+
+// https://developers.notion.com/reference/get-database
+$notion->database("2f611956-c64b-4588-ab64-2f013ac42527");
+
+// https://developers.notion.com/reference/get-users
+$notion->users();
+
+// https://developers.notion.com/reference/get-user
+ $notion->user("73e41e87-0ae2-4ef0-bd21-a9d352c07a47");
+
+ // https://developers.notion.com/reference/post-search
+ $notion->search("hassan", 'last_edited_time');
+
+
+// https://developers.notion.com/reference/get-page
+ $notion->page("cdd93f5f-1626-4388-9a02-78779663a3aa")
+
+// https://developers.notion.com/reference/post-page
+ $notion->createPage(
+        "2f611956-c64b-4588-ab64-2f013ac42527",
+        "database_id",
+        [
+            'Name' => [
+                'title' => [
+                    0 => [
+                        'text' => [
+                            'content' => 'Tuscan Kale',
+                        ],
+                    ],
+                ],
+            ],
+            'Email' => [
+                'email' => "test@gmail.com",
+            ],
+        ],
+        [
+            0 => [
+                'object' => 'block',
+                'type' => 'heading_2',
+                'heading_2' => [
+                    'text' => [
+                        0 => [
+                            'type' => 'text',
+                            'text' => [
+                                'content' => 'Lacinato kale',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            1 => [
+                'object' => 'block',
+                'type' => 'paragraph',
+                'paragraph' => [
+                    'text' => [
+                        0 => [
+                            'type' => 'text',
+                            'text' => [
+                                'content' => 'Lacinato kale is a variety of kale with a long tradition in Italian cuisine, especially that of Tuscany. It is also known as Tuscan kale, Italian kale, dinosaur kale, kale, flat back kale, palm tree kale, or black Tuscan palm.',
+                                'link' => [
+                                    'url' => 'https://en.wikipedia.org/wiki/Lacinato_kale',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
+    );
+
+
+// https://developers.notion.com/reference/patch-page
+     $notion->updatePage(
+        "cdd93f5f-1626-4388-9a02-78779663a3aa",
+        [
+            'Name' => [
+                'title' => [
+                    0 => [
+                        'text' => [
+                            'content' => 'Tuscan Kale',
+                        ],
+                    ],
+                ],
+            ],
+            'Email' => [
+                'email' => "test@gmail.com",
+            ],
+        ],
+        [
+            0 => [
+                'object' => 'block',
+                'type' => 'heading_2',
+                'heading_2' => [
+                    'text' => [
+                        0 => [
+                            'type' => 'text',
+                            'text' => [
+                                'content' => 'Lacinato kale',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            1 => [
+                'object' => 'block',
+                'type' => 'paragraph',
+                'paragraph' => [
+                    'text' => [
+                        0 => [
+                            'type' => 'text',
+                            'text' => [
+                                'content' => 'Lacinato kale is a variety of kale with a long tradition in Italian cuisine, especially that of Tuscany. It is also known as Tuscan kale, Italian kale, dinosaur kale, kale, flat back kale, palm tree kale, or black Tuscan palm.',
+                                'link' => [
+                                    'url' => 'https://en.wikipedia.org/wiki/Lacinato_kale',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
+    );
 ```
 
 ## Changelog
@@ -79,8 +196,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [elsayed85](https://github.com/elsayed85)
-- [All Contributors](../../contributors)
+-   [elsayed85](https://github.com/elsayed85)
+-   [All Contributors](../../contributors)
 
 ## License
 
