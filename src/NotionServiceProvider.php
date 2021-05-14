@@ -16,7 +16,7 @@ class NotionServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('Notion')
+            ->name('notion')
             ->hasConfigFile();
     }
 }
