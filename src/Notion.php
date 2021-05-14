@@ -1,6 +1,6 @@
 <?php
 
-namespace Elsayed85\Notion\Internal;
+namespace Elsayed85\Notion;
 
 use Elsayed85\Notion\ErrorException;
 use Elsayed85\Notion\RateLimitException;
